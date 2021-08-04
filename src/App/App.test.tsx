@@ -6,7 +6,7 @@ describe('App', () => {
 
     beforeEach(() => {
       renderedApp = new AppPO({
-        initialEntries: ['/upload']
+        initialEntries: ['/upload'],
       })
     })
 

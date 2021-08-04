@@ -4,9 +4,9 @@ import './App.css'
 import { NavBar } from '../components/navBar'
 import { Upload } from '../views/upload'
 
-interface AppProps { }
+interface AppProps {}
 
-const App: React.FC<AppProps> = ({ }: AppProps) => {
+const App: React.FC<AppProps> = ({}: AppProps) => {
   return (
     <Router>
       <div className="cat-container">
