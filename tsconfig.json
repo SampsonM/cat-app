@@ -1,6 +1,12 @@
 {
-  "include": ["src/**/*.tsx", "types"],
+  "include": [
+    "src/**/*.tsx",
+    "types"
+  ],
   "compilerOptions": {
+    "lib": [
+      "DOM"
+    ],
     "module": "esnext",
     "target": "esnext",
     "moduleResolution": "node",
