@@ -1,3 +1,21 @@
-.cat-upload {}
+.cat-upload {
+	display: flex;
+	justify-content: space-around;
+}
 
-.cat-upload__submit {}
+.cat-upload__form {
+	max-width: 600px;
+	padding: 20px 10px;
+	display: flex;
+	flex-direction: column;
+	background-color: #f8e647;
+	border: 2px solid #171525;
+}
+
+.cat-upload__file-label {
+	margin-bottom: 10px;
+}
+
+.cat-upload__submit {
+	border: 2px solid #171525;
+}
