@@ -2,66 +2,54 @@ import axios from 'axios'
 import React, { FormEvent, useState, useEffect, useRef } from 'react'
 import { act } from 'react-dom/test-utils'
 import { useHistory } from 'react-router-dom'
+import { useFetch } from '../../hooks/useFetch'
 import './upload.css'
 
-interface UploadProps { }
+interface UploadProps {}
 
 const Upload: React.FC<UploadProps> = () => {
-  const [imageFile, setImageFile] = useState<string | Blob>()
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState(false)
-  const isMounted = useRef(false);
+  const [formData, setFormData] = useState<FormData>()
   const history = useHistory()
+
+  const { response, error, loading, setFetching, setError } = useFetch<any>(
+    'https://api.thecatapi.com/v1/images/upload',
+    { method: 'POST', body: formData, headers: {} },
+  )
 
   const handleImageSelect = (event: FormEvent<HTMLInputElement>) => {
     const target = event.target as HTMLInputElement
-    const image: File = (target.files as FileList)[0]
 
-    setImageFile(image)
+    if (target?.files?.[0]) {
+      setError('')
+      const formData = new FormData()
+      formData.append('file', target.files[0])
+      setFormData(formData)
+    }
   }
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
-    setSubmitting(true)
+    if (formData) {
+      setFetching(true)
+    } else {
+      setError('Error: No image uploaded!')
+    }
   }
 
   useEffect(() => {
-    async function postImage() {
-      if (imageFile) {
-        try {
-          const formData = new FormData()
-          formData.append('file', imageFile)
-
-          await axios.post(
-            'https://api.thecatapi.com/v1/images/upload',
-            formData,
-            {
-              headers: {
-                'x-api-key': 'a9c159b6-bbab-4527-88c9-b01675355642',
-                'Content-Type': 'multipart/form-data',
-              },
-            },
-          )
-
-          history.push('/')
-        } catch (err) {
-          act(() => setError(true))
-        }
-      } else {
-        act(() => setError(true))
-      }
+    if (response) {
+      history.push('/')
     }
-
-    if (isMounted.current) {
-      postImage();
-    } else {
-      isMounted.current = true
-    }
-  }, [submitting]);
+  }, [response])
 
   return (
     <div className="cat-upload">
-      <form data-testid="cat-upload-form" className="cat-upload__form" onSubmit={handleSubmit}>
+      <form
+        noValidate
+        data-testid="cat-upload-form"
+        className="cat-upload__form"
+        onSubmit={handleSubmit}
+      >
         <label className="cat-upload__file-label">
           Cat image:
           <input
@@ -72,7 +60,15 @@ const Upload: React.FC<UploadProps> = () => {
           />
         </label>
 
-        {error && <div data-testid="cat-upload-form-error">Error</div>}
+        {error && (
+          <div
+            aria-live="polite"
+            className="cat-upload__form-error"
+            data-testid="cat-upload-form-error"
+          >
+            {error}
+          </div>
+        )}
 
         <input
           data-testid="cat-upload-submit-btn"

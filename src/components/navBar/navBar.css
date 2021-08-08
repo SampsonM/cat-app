@@ -1,0 +1,29 @@
+.cat-nav {
+	height: 50px;
+	margin: 0 10px
+}
+
+.cat-nav__list {
+	list-style: none;
+	display: flex;
+	justify-content: flex-end;
+	height: 100%;
+}
+
+.cat-nav__list-item {
+	display: inline-flex;
+}
+
+.cat-nav__link {
+	padding: 5px 10px;
+	background-color: #b848d4;
+	border: 2px solid #171525;
+	color: #171525;
+	margin: auto 0;
+}
+
+.cat-nav__link:hover,
+.cat-nav__link:focus {
+	background-color: #f2d4fa;
+	color: #171525;
+}

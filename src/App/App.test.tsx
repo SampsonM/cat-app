@@ -1,19 +1,20 @@
-import AppPO from './AppPageObj'
+import App from './App'
+import React from 'react'
+import { MemoryRouter } from 'react-router-dom'
+import { render, screen } from '@testing-library/react'
 
 describe('App', () => {
   describe('when /upload view rendered', () => {
-    let renderedApp: AppPO
-
-    beforeEach(() => {
-      renderedApp = new AppPO({
-        initialEntries: ['/upload'],
-      })
-    })
-
     it('should render nav bar', async () => {
-      const uploadView = await renderedApp.getNav()
+      render(
+        <MemoryRouter initialEntries={['/upload']} initialIndex={0}>
+          <App />
+        </MemoryRouter>,
+      )
 
-      expect(uploadView).toBeDefined()
+      const nav = await screen.findByTestId('cat-nav')
+
+      expect(nav).toBeDefined()
     })
   })
 })

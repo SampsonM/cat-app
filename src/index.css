@@ -4,3 +4,15 @@
 	font-size: 1rem;
 	font-family: Open Sans,Segoe UI,Tahoma,sans-serif;
 }
+
+html, body, #app {
+  height: 100%;
+	position: absolute;
+	left: 0;
+	width: 100%;
+	overflow: hidden;
+}
+
+html {
+	background-color: #62ec46;
+}

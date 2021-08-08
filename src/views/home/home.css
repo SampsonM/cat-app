@@ -1,0 +1,14 @@
+.cat-home {
+	margin: 0 10px 10px 10px;
+}
+
+.cat-home__cat-list {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.cat-home__cat-list-item {
+	list-style-type: none;
+	flex: 1 0 calc(25% - 10px);
+	margin: 0 5px 10px 5px;
+}

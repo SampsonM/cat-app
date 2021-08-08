@@ -12,6 +12,14 @@
 	border: 2px solid #171525;
 }
 
+.cat-upload__form-error {
+	color: #f00;
+	padding: 5px;
+	margin-bottom: 5px;
+	background-color: #471212;
+	border: 2px solid #ff0404;
+}
+
 .cat-upload__file-label {
 	margin-bottom: 10px;
 }

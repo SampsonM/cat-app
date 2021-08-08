@@ -1,86 +1,112 @@
 import React from 'react'
-import { render, waitFor, fireEvent, findByTestId, Query } from '@testing-library/react'
+import { render, fireEvent, waitFor, screen } from '@testing-library/react'
 import Upload from './upload'
-import axios from 'axios'
 import { MemoryRouter } from 'react-router-dom'
+import fetch from 'jest-fetch-mock'
 
-const mockAxios = axios as jest.Mocked<typeof axios>
 const mockHistoryPush = jest.fn()
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
     push: mockHistoryPush,
-  }),
-}));
+  })
+}))
 
 describe('Upload', () => {
-  afterEach(() => {
-    jest.clearAllMocks()
+  beforeEach(() => {
+    fetch.resetMocks()
   })
 
   describe('when an image is successfully uploaded', () => {
-    beforeEach(async () => {
-      mockAxios.post.mockResolvedValueOnce({ data: {} })
+    let file: File
 
-      const file = new File(['test-image'], 'test-image.png', {
-        type: 'image/png',
-      })
+    beforeEach(() => {
+      fetch.mockResponseOnce(JSON.stringify({ ok: true }))
 
-      const { getByTestId } = render(<MemoryRouter><Upload /></MemoryRouter>)
-
-      fireEvent.change(getByTestId('cat-file-uploader'), {
-        target: { files: [file] },
-      })
-
-      fireEvent.submit(getByTestId('cat-upload-form'))
+      file = new File(['test-image'], 'test-image.png', { type: 'image/png' })
     })
 
-    it('should upload cat image to api', () => {
-      expect(
-        mockAxios.post,
-      ).toHaveBeenCalledWith(
-        'https://api.thecatapi.com/v1/images/upload',
-        expect.any(FormData),
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'x-api-key': 'a9c159b6-bbab-4527-88c9-b01675355642',
-          },
-        },
+    it('should upload cat image to api', async () => {
+      render(
+        <MemoryRouter>
+          <Upload />
+        </MemoryRouter>,
       )
 
-      // Depending on the level of testing the team feels relevant for the uploading of an
-      // image depends on how this part is tested
-      // I think the image being successfully uploaded is more suited to an E2E test
-      // so have decided against testing the form data structure here
+      const uploader = await screen.findByTestId('cat-file-uploader')
+      fireEvent.change(uploader, { target: { files: [file] } })
+
+      const form = await screen.findByTestId('cat-upload-form')
+
+      fireEvent.submit(form)
+
+      await waitFor(() => {
+        expect(fetch).toHaveBeenCalledWith(
+          'https://api.thecatapi.com/v1/images/upload',
+          {
+            body: expect.any(FormData),
+            headers: {
+              'x-api-key': 'a9c159b6-bbab-4527-88c9-b01675355642',
+            },
+            method: 'POST',
+          },
+        )
+      })
     })
 
-    it('should redirect user to home page', () => {
-      expect(mockHistoryPush).toHaveBeenCalledWith('/')
+    it('should redirect user to home page', async () => {
+      render(
+        <MemoryRouter>
+          <Upload />
+        </MemoryRouter>,
+      )
+
+      const uploader = await screen.findByTestId('cat-file-uploader')
+      fireEvent.change(uploader, { target: { files: [file] } })
+
+      const form = await screen.findByTestId('cat-upload-form')
+
+      fireEvent.submit(form)
+
+      await waitFor(() => {
+        expect(mockHistoryPush).toHaveBeenCalledWith('/')
+      })
     })
   })
 
   describe('when an image is NOT successfully uploaded', () => {
-    let getByTestId: any
-    let findByTestId: any
+    it('should display correct error when no file selected', async () => {
+      render(
+        <MemoryRouter>
+          <Upload />
+        </MemoryRouter>,
+      )
 
-    beforeEach(() => {
-      mockAxios.post.mockRejectedValueOnce(new Error(''))
+      fireEvent.submit(await screen.findByTestId('cat-upload-form'))
 
-      const app = render(<MemoryRouter><Upload /></MemoryRouter>)
-      getByTestId = app.getByTestId
-      findByTestId = app.findByTestId
-
-      fireEvent.change(getByTestId('cat-file-uploader'), {
-        target: { files: [] },
-      })
-
-      fireEvent.submit(getByTestId('cat-upload-form'))
+      expect(screen.findByText('No image uploaded!')).toBeDefined()
     })
 
-    it('should display errors returned form API', async () => {
-      const error = await findByTestId('cat-upload-form-error')
+    it('should display correct error when no file selected', async () => {
+      fetch.mockResponseOnce(JSON.stringify({ message: 'API error' }), {
+        status: 400,
+        headers: { 'content-type': 'application/json' },
+      })
+
+      render(
+        <MemoryRouter>
+          <Upload />
+        </MemoryRouter>,
+      )
+
+      const uploader = await screen.findByTestId('cat-file-uploader')
+      fireEvent.change(uploader, { target: { files: [{}] } })
+
+      const form = await screen.findByTestId('cat-upload-form')
+      fireEvent.submit(form)
+
+      const error = await screen.findByText('API error')
       expect(error).toBeDefined()
     })
   })

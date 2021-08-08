@@ -1,11 +1,11 @@
-.cat-container {
-	background-color: #0a6fba;
-	padding: 20px 0 0 0;
+.cat-app {
+	height: 100%;
+	overflow: auto;
 	text-align: center;
 }
 
 @media only screen and (min-width: 560px) {
-  .cat-container {
-    padding: 50px;
+  .cat-app {
+    padding: 10px 50px;
   }
 }
