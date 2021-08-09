@@ -5,9 +5,11 @@
 .cat-home__cat-list {
 	display: flex;
 	flex-wrap: wrap;
+	justify-content: space-evenly;
 }
 
 .cat-home__cat-list-item {
+	max-width: 350px;
 	list-style-type: none;
 	flex: 1 0 calc(25% - 10px);
 	margin: 0 5px 10px 5px;

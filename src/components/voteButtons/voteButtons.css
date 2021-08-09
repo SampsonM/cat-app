@@ -1,3 +1,5 @@
 .cat-vote-buttons__button {
 	padding: 0 2px 3px 2px;
+	width: 100%;
+	border: 2px solid #000;
 }

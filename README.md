@@ -21,6 +21,8 @@ Future improvements:
 - Improve type generics being passed into useFetch hook
 - Improve styles usage to use css.modules over BEM classnames
 - Add some logic to get favourite cat images and display accordingly
+- Add api key as env variables for tests and prod build
+- Componentise basic components such as buttons to create consistent look and feel without having to repeat CSS
 
 #
 ## Running Locally

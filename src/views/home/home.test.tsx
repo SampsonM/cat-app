@@ -25,11 +25,12 @@ describe('Home', () => {
     render(<Home />)
 
     await waitFor(async () => {
-      expect(await screen.findAllByRole('img', {
-        name: /Cat image /i,
-      })).toBeTruthy()
+      expect(
+        await screen.findAllByRole('img', {
+          name: /Cat image /i,
+        }),
+      ).toBeTruthy()
     })
-
 
     const cards = await screen.findAllByTestId('cat-card-list-item')
     expect(cards[0]).toHaveTextContent('1')
